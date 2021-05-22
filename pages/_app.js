@@ -18,9 +18,12 @@ const client = new ApolloClient({
   },
 });
 class MyApp extends App {
+  
   render() {
+    
     const { Component, pageProps } = this.props;
     const shopOrigin = pageProps.shopOrigin ?? Cookies.get("shopOrigin");
+    console.log(shopOrigin);
     return (
       <AppProvider i18n={translations}>
         <Provider
