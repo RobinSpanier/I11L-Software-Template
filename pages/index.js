@@ -8,7 +8,7 @@ import store from 'store-js';
 const Index = () => {
   console.log("yo");
   return (
-   <div>I work redeploy</div>
+   <div>I work redeploy q</div>
   );
 };
 
