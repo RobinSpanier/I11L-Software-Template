@@ -7,7 +7,7 @@ import { authenticateShopifyPage } from "@bluebeela/nextjs-shopify-auth";
 class Index extends React.Component{
   setScriptTag(e){
     const scriptTagInput = {
-      src: 'https://b04186343800.ngrok.io/api/shopify/scripts/testScript', 
+      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App.js', 
       displayScope: 'ONLINE_STORE'
     };
     console.log("script tag gesetzt, input:",scriptTagInput);
