@@ -5,18 +5,33 @@ import { TitleBar } from '@shopify/app-bridge-react';
 import { authenticateShopifyPage } from "@bluebeela/nextjs-shopify-auth";
 
 class Index extends React.Component{
-  setScriptTag(e){
+  setScriptTags(e){
+    this.applyCountdownAppToWebfront(e);
+    this.applyConfigurationToWebfront(e);
+
+  }
+  applyConfigurationToWebfront(e){
+    const scriptTagInput = {
+      src: 'https://firestore.googleapis.com/v1/projects/i11l-software/databases/(default)/documents/Countdown-Configuration/tAoYnDTBXG1uS58959Z1', 
+      displayScope: 'ONLINE_STORE'
+    };
+    console.log("configuration link for user set ",scriptTagInput);
+    this.props.addScriptTagMutation(
+      {variables: { input:scriptTagInput },}
+    )
+  }
+  applyCountdownAppToWebfront(e){
     const scriptTagInput = {
       src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App.js', 
       displayScope: 'ONLINE_STORE'
     };
-    console.log("script tag gesetzt, input:",scriptTagInput);
+    console.log("countdown link set: ",scriptTagInput);
     this.props.addScriptTagMutation(
       {variables: { input:scriptTagInput },}
     )
   }
   render(){
-    const primaryAction = {content: 'Apply in Store', onAction: this.setScriptTag.bind(this)};
+    const primaryAction = {content: 'Apply in Store', onAction: this.setScriptTags.bind(this)};
     return (
       <div>
         <TitleBar
