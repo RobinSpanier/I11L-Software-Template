@@ -19,7 +19,39 @@ class Index extends React.Component{
 
   addConfiguration(){
     let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc("i11l-playground-five.myshopify.com");
-    let config = {"sizeSchema":2};
+    const config = {
+      endTime: null,
+      sizeSchema: "1",
+      positionSchema: 0,
+      messageText: "a new special offer!",
+      buyNowBtnText: "buy now",
+      daysText: "days",
+      hoursText: "hours",
+      minutesText: "minutes",
+      secondsText: "seconds",
+      messageTextColor: "yellow",
+      buyNowBtnTextColor: "red",
+      daysCountTextColor: "red",
+      hoursCountTextColor: "red",
+      minutesCountTextColor: "red",
+      secondsCountTextColor: "red",
+      daysLabelTextColor: "red",
+      hoursLabelTextColor: "red",
+      minutesLabelTextColor: "red",
+      secondsLabelTextColor: "red",
+      backgroundColor: "green",
+      daysBackgroundColor: "yellow",
+      hoursBackgroundColor: "yellow",
+      minutesBackgroundColor: "yellow",
+      secondsBackgroundColor: "yellow",
+      buyNowBtnBackgroundColor: "yellow",
+      daysBackgroundTemplate: null,
+      hoursBackgroundTemplate: null,
+      minutesBackgroundTemplate: null,
+      secondsBackgroundTemplate: null,
+      backgroundTemplate: null,
+      buyNowBtnBackgroundTemplate: null
+    }
     configurationsRef.set(config);
 
   }
@@ -30,7 +62,7 @@ class Index extends React.Component{
 
   setScriptTag(e){
     const scriptTagInput = {
-      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v6.js', 
+      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v7.js', 
       displayScope: 'ONLINE_STORE'
     };
     console.log("script tag gesetzt, input:",scriptTagInput);
