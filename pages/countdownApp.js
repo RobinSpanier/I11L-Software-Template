@@ -139,13 +139,14 @@ const CountdownApp = (props) => {
         }
     }
 
-    const updateConfigurationObject = () => {
+    const updateConfigurationObject = (key, value) => {
         const newConfiguration = {
             endTime,sizeSchema,positionSchema,messageText,buyNowBtnText,daysText,
             hoursText,minutesText,secondsText,messageTextColor,buyNowBtnTextColor,
             daysCountTextColor,hoursCountTextColor,minutesCountTextColor,secondsCountTextColor,
             daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
             containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, secondsBackgroundColor, buyNowBtnBackgroundColor};
+        newConfiguration[key] = value;
         props.onChangeValue(newConfiguration);
     }
 
@@ -199,7 +200,7 @@ const CountdownApp = (props) => {
                         {selectionState === 1 && (
     
                             <Card title="Layout Edit" sectioned>
-                                <TextField label="Message to the User" value={messageText} onChange={(e) => {setMessageText(e);updateConfigurationObject()}} inputMode="text" maxLength={30} />
+                                <TextField label="Message to the User" value={messageText} onChange={(e) => {setMessageText(e);updateConfigurationObject("messageText",e)}} inputMode="text" maxLength={30} />
                                 <div className="oneThirdGrid">
 
                                 
@@ -209,7 +210,8 @@ const CountdownApp = (props) => {
                                     <p className="colorDescription">
                                         <TextStyle variation="strong">Background Color</TextStyle>
                                     </p>
-                                    <BlockPicker color={containerBackgroundColor} colors={colorPalette} onChangeComplete={(color) => {setBackgroundColor(color.hex)}} />
+                                    <BlockPicker color={containerBackgroundColor} colors={colorPalette} 
+                                    onChangeComplete={(color) => {setBackgroundColor(color.hex);updateConfigurationObject("containerBackgroundColor",color.hex)}} />
                                 </div>
                                 <div>
                                     
