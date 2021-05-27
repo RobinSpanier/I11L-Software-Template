@@ -8,6 +8,7 @@ import { Provider } from "@shopify/app-bridge-react";
 import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
 import ClientRouter from '../components/ClientRouter';
+import "./style.css";
 
 
 const client = new ApolloClient({
