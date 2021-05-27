@@ -81,9 +81,8 @@ const CountdownApp = (props) => {
     let [buyNowBtnBackgroundTemplate, setBuyNowBtnBackgroundTemplate] = useState(config.buyNowBtnBackgroundTemplate);
 
     const sizeChoices = [
-        {label: 'Tiny', value: "1"},
-        {label: 'Small', value: "2"},
-        {label: 'Normal', value: "0"},
+        {label: 'Small', value: "1"},
+        {label: 'Normal', value: "2"},
         {label: 'Large', value: "3"}
     ]
     const gradient_1 = 'linear-gradient(170deg, rgba(49, 57, 73, 0.8) 20%, rgba(49, 57, 73, 0.5) 20%, rgba(49, 57, 73, 0.5) 35%, rgba(41, 48, 61, 0.6) 35%, rgba(41, 48, 61, 0.8) 45%, rgba(31, 36, 46, 0.5) 45%, rgba(31, 36, 46, 0.8) 75%, rgba(49, 57, 73, 0.5) 75%), linear-gradient(45deg, rgba(20, 24, 31, 0.8) 0%, rgba(41, 48, 61, 0.8) 50%, rgba(82, 95, 122, 0.8) 50%, rgba(133, 146, 173, 0.8) 100%)';
@@ -150,10 +149,6 @@ const CountdownApp = (props) => {
         props.onChangeValue(newConfiguration);
     }
 
-    function formChanged(){
-      console.log("form changed");
-    }
-
     return ( 
         <div>  
             <div onClick={() => setSelectionState(1)} className="container" style={{background: backgroundTemplate, backgroundColor: containerBackgroundColor}}>
@@ -211,14 +206,15 @@ const CountdownApp = (props) => {
                                         <TextStyle variation="strong">Background Color</TextStyle>
                                     </p>
                                     <BlockPicker color={containerBackgroundColor} colors={colorPalette} 
-                                    onChangeComplete={(color) => {setBackgroundColor(color.hex);updateConfigurationObject("containerBackgroundColor",color.hex)}} />
+                                    onChangeComplete={(color) => {setBackgroundColor(color.hex);updateConfigurationObject("backgroundColor",color.hex)}} />
                                 </div>
                                 <div>
                                     
                                     <p className="colorDescription">
                                         <TextStyle variation="strong">Message Color</TextStyle>
                                     </p>
-                                    <BlockPicker color={messageTextColor} colors={colorPalette} onChangeComplete={(color) => {setMessageTextColor(color.hex)}} label="hex" />
+                                    <BlockPicker color={messageTextColor} colors={colorPalette} 
+                                    onChangeComplete={(color) => {setMessageTextColor(color.hex);updateConfigurationObject("messageTextColor",color.hex)}} label="hex" />
                                 </div>
                                 <div>
 
@@ -233,25 +229,28 @@ const CountdownApp = (props) => {
                         {selectionState === 2 && (
 
                             <Card title="Days Edit" sectioned>
-                                <TextField label="Label Text" value={daysText} onChange={(e) => setDaysText(e)} inputMode="text" maxLength={15} />
+                                <TextField label="Label Text" value={daysText} onChange={(e) => {setDaysText(e);updateConfigurationObject("daysText",e)}} inputMode="text" maxLength={15} />
                                 <div className="oneThirdGrid">
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Days Background Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={daysBackgroundColor} colors={colorPalette} onChangeComplete={(color) => {setDaysBackgroundColor(color.hex)}} />
+                                        <BlockPicker color={daysBackgroundColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setDaysBackgroundColor(color.hex);updateConfigurationObject("daysBackgroundColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Days Time Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={daysCountTextColor} colors={colorPalette} onChangeComplete={(color) => {setDaysCountTextColor(color.hex)}} />
+                                        <BlockPicker color={daysCountTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setDaysCountTextColor(color.hex);updateConfigurationObject("daysCountTextColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Days Label Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={daysLabelTextColor} colors={colorPalette} onChangeComplete={(color) => {setDaysLabelTextColor(color.hex)}} />
+                                        <BlockPicker color={daysLabelTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setDaysLabelTextColor(color.hex);updateConfigurationObject("daysLabelTextColor",color.hex)}} />
                                     </div>
                                 </div>
                             </Card>
@@ -259,94 +258,108 @@ const CountdownApp = (props) => {
                         )}
                         {selectionState === 3 && (
                             <Card title="Hours Edit" sectioned>
-                                <TextField label="Label Text" value={hoursText} onChange={(e) => setHoursText(e)} inputMode="text" maxLength={15} />
+                                <TextField label="Label Text" value={hoursText} onChange={(e) => {setHoursText(e);updateConfigurationObject("hoursText",e)}} inputMode="text" maxLength={15} />
                                 <div className="oneThirdGrid">
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Hours Background Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={hoursBackgroundColor} colors={colorPalette} onChangeComplete={(color) => {setHoursBackgroundColor(color.hex)}} />
+                                        <BlockPicker color={hoursBackgroundColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setHoursBackgroundColor(color.hex);updateConfigurationObject("hoursBackgroundColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Hours Time Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={hoursCountTextColor} colors={colorPalette} onChangeComplete={(color) => {setHoursCountTextColor(color.hex)}} />
+                                        <BlockPicker color={hoursCountTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setHoursCountTextColor(color.hex);updateConfigurationObject("hoursCountTextColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Hours Label Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={hoursLabelTextColor} colors={colorPalette} onChangeComplete={(color) => {setHoursLabelTextColor(color.hex)}} />
+                                        <BlockPicker color={hoursLabelTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setHoursLabelTextColor(color.hex);updateConfigurationObject("hoursLabelTextColor",color.hex)}} />
                                     </div>
                                 </div>
                             </Card>
                         )}
                         {selectionState === 4 && (
                             <Card title="Minutes Edit" sectioned>
-                                <TextField label="Label Text" value={minutesText} onChange={(e) => setMinutesText(e)} inputMode="text" maxLength={15} />
+                                <TextField label="Label Text" value={minutesText} 
+                                onChange={(e) => {setMinutesText(e);updateConfigurationObject("minutesText",e)}} inputMode="text" maxLength={15} />
                                 <div className="oneThirdGrid">
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Minutes Background Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={minutesBackgroundColor} colors={colorPalette} onChangeComplete={(color) => {setMinutesBackgroundColor(color.hex)}} />
+                                        <BlockPicker color={minutesBackgroundColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setMinutesBackgroundColor(color.hex);updateConfigurationObject("minutesBackgroundColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Minutes Time Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={minutesCountTextColor} colors={colorPalette} onChangeComplete={(color) => {setMinutesCountTextColor(color.hex)}} />
+                                        <BlockPicker color={minutesCountTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setMinutesCountTextColor(color.hex);updateConfigurationObject("minutesCountTextColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Minutes Label Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={minutesLabelTextColor} colors={colorPalette} onChangeComplete={(color) => {setMinutesLabelTextColor(color.hex)}} />
+                                        <BlockPicker color={minutesLabelTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setMinutesLabelTextColor(color.hex);updateConfigurationObject("minutesLabelTextColor",color.hex)}} />
                                     </div>
                                 </div>
                             </Card>
                         )}
                         {selectionState === 5 && (
                             <Card title="Seconds Edit" sectioned>
-                                <TextField label="Label Text" value={secondsText} onChange={(e) => setSecondsText(e)} inputMode="text" maxLength={15} />
+                                <TextField label="Label Text" value={secondsText} 
+                                onChange={(e) => {setSecondsText(e);updateConfigurationObject("secondsText",e)}} inputMode="text" maxLength={15} />
                                 <div className="oneThirdGrid">
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Seconds Background Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={secondsBackgroundColor} colors={colorPalette} onChangeComplete={(color) => {setSecondsBackgroundColor(color.hex)}} />
+                                        <BlockPicker color={secondsBackgroundColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setSecondsBackgroundColor(color.hex);updateConfigurationObject("secondsBackgroundColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Seconds Time Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={secondsCountTextColor} colors={colorPalette} onChangeComplete={(color) => {setSecondsCountTextColor(color.hex)}} />
+                                        <BlockPicker color={secondsCountTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setSecondsCountTextColor(color.hex);updateConfigurationObject("secondsCountTextColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Seconds Label Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={secondsLabelTextColor} colors={colorPalette} onChangeComplete={(color) => {setSecondsLabelTextColor(color.hex)}} />
+                                        <BlockPicker color={secondsLabelTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setSecondsLabelTextColor(color.hex);updateConfigurationObject("secondsLabelTextColor",color.hex)}} />
                                     </div>
                                 </div>
                             </Card>
                         )}
                         {selectionState === 6 && (
                             <Card title="Button Edit" sectioned>
-                                <TextField label="Button Text" value={buyNowBtnText} onChange={(e) => setBuyNowBtnText(e)} inputMode="text" maxLength={15} />
+                                <TextField label="Button Text" value={buyNowBtnText} 
+                                onChange={(e) => {setBuyNowBtnText(e);updateConfigurationObject("buyNowBtnText",e)}} inputMode="text" maxLength={15} />
                                 <div className="oneThirdGrid">
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Button Background Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={buyNowBtnBackgroundColor} colors={colorPalette} onChangeComplete={(color) => {setBuyNowBtnBackgroundColor(color.hex)}} />
+                                        <BlockPicker color={buyNowBtnBackgroundColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setBuyNowBtnBackgroundColor(color.hex);updateConfigurationObject("buyNowBtnBackgroundColor",color.hex)}} />
                                     </div>
                                     <div>
                                         <p className="colorDescription">
                                             <TextStyle variation="strong">Button Text Color</TextStyle>
                                         </p>
-                                        <BlockPicker color={buyNowBtnTextColor} colors={colorPalette} onChangeComplete={(color) => {setBuyNowBtnTextColor(color.hex)}} />
+                                        <BlockPicker color={buyNowBtnTextColor} colors={colorPalette} 
+                                        onChangeComplete={(color) => {setBuyNowBtnTextColor(color.hex);updateConfigurationObject("buyNowBtnTextColor",color.hex)}} />
                                     </div>
                                 </div>
                             </Card>
