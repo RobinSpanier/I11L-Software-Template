@@ -12,7 +12,7 @@ const CountdownApp = (props) => {
     
 
     const year = new Date().getFullYear();
-    let endTime = config.endTime ? config.endTime : new Date(year, 5, 4).getTime();
+    let [endTime, setEndTime] = useState(config.endTime);
     let today = new Date().getTime();
     let diff = endTime - today;
     let [days, setDays] = useState(Math.floor(diff / (1000 * 60 * 60 * 24)));
@@ -72,6 +72,8 @@ const CountdownApp = (props) => {
     let [minutesText, setMinutesText] = useState(config.minutesText);
     let [secondsText, setSecondsText] = useState(config.secondsText);
     let [positionSchema, setPositionSchema] = useState(config.positionSchema);
+
+    
 
     let [daysBackgroundTemplate, setDaysBackgroundTemplate] = useState(config.daysBackgroundTemplate);
     let [hoursBackgroundTemplate, setHoursBackgroundTemplate] = useState(config.HoursBackgroundTemplate);
@@ -179,7 +181,10 @@ const CountdownApp = (props) => {
             <form>
                 <Page fullWidth>
                     <Card title="Quickedit" sectioned>
-                        <ChoiceList title="Countdown Size" choices={sizeChoices} onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0])}} selected={sizeSchema} />
+                        <ChoiceList title="Countdown Size" choices={sizeChoices} 
+                        onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
+                        selected={sizeSchema} />
+                        <input type="datetime-local" value={new Date(endTime)} onChange={(e) => setEndTime(e)} min={Date.now()} />
                     </Card>
                     <br />
                         {selectionState === 0 && (

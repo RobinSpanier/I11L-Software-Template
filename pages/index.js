@@ -3,7 +3,6 @@ import { addScriptTagMutation } from '../queries/queries';
 import { graphql } from 'react-apollo';
 import { TitleBar } from '@shopify/app-bridge-react';
 import firebase from "./firebase";
-import {Button} from '@shopify/polaris';
 import { authenticateShopifyPage } from "@bluebeela/nextjs-shopify-auth";
 import CountdownApp from './countdownApp';
 
@@ -51,19 +50,6 @@ class Index extends React.Component{
     buyNowBtnBackgroundTemplate: null
   }
 
-  
-
-  addConfiguration(newConfig){
-    let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc("i11l-playground-five.myshopify.com");
-    console.log(newConfig);
-    configurationsRef.set(newConfig);
-
-  }
-
-  
-
-
-
   setScriptTag(e){
     const scriptTagInput = {
       src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v9.js', 
@@ -73,12 +59,14 @@ class Index extends React.Component{
     this.props.addScriptTagMutation(
       {variables: { input:scriptTagInput },}
     )
+
+    let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc("i11l-playground-five.myshopify.com");
+    configurationsRef.set(this.config);
   }
 
 
   handleChangeValue = e => {
     this.config = e;
-    console.log("newconfig",this.config);
   };
   render(){
    
@@ -89,7 +77,6 @@ class Index extends React.Component{
         <TitleBar
           primaryAction={primaryAction}
         />
-        <Button onClick={() => this.addConfiguration(this.config)}>Safe Configuration</Button>
 
         <CountdownApp 
           configuration={this.config}
