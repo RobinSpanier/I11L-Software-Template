@@ -17,7 +17,7 @@ class Index extends React.Component{
   //   })
   // }
   config = {
-    endTime: null,
+    endTime: new Date().getTime()+1000*60*30,
     sizeSchema: "1",
     positionSchema: 0,
     messageText: "a new special offer!",

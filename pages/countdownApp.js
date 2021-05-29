@@ -1,4 +1,4 @@
-import { useState, useCallback} from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
@@ -11,26 +11,71 @@ const CountdownApp = (props) => {
 
     
 
-    const year = new Date().getFullYear();
     let [endTime, setEndTime] = useState(config.endTime);
-    let today = new Date().getTime();
-    let diff = endTime - today;
+    let [diff, setDiff] = useState(endTime - new Date().getTime());
     let [days, setDays] = useState(Math.floor(diff / (1000 * 60 * 60 * 24)));
     let [hours, setHours] = useState(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
     let [minutes, setMinutes] = useState(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
     let [seconds, setSeconds] = useState(Math.floor((diff % (1000 * 60)) / 1000));
 
-    let Timer = setInterval(function () {
-        today = new Date().getTime();
-        diff = endTime - today;
-        setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
-        setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-        setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-        setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
+    
+    // timerRef = setTimeout(function () {
+    //     today = new Date().getTime();
+    //     diff = endTime - today;
+    //     console.log(diff);
+    //     setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
+    //     setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+    //     setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+    //     setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
         
+    // }, 1000);
+
+    function useInterval(callback, delay) {
+      const savedCallback = useRef();
+    
+      // Remember the latest callback.
+      useEffect(() => {
+        savedCallback.current = callback;
+      }, [callback]);
+    
+      // Set up the interval.
+      useEffect(() => {
+        function tick() {
+          savedCallback.current();
+        }
+        if (delay !== null) {
+          let id = setInterval(tick, delay);
+          return () => clearInterval(id);
+        }
+      }, [delay]);
+    }
+
+    useInterval(() => {
+      console.log(diff);
+      setDiff(endTime - new Date().getTime());
+      setTime()
     }, 1000);
 
+    function setTime(){
+      setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
+      setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+      setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+      setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
+    }
+
+    // useEffect(() => {
+    //   const interval = setInterval(() => {
+    //     console.log("the diff", diff);
+    //     setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
+    //     setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+    //     setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+    //     setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
+    //   }, 1000);
+    //   return () => clearInterval(interval);
+    // }, []);
+
     let [messageText, setMessageText] = useState(config.messageText);
+    
 
     let [daysBackgroundColor, setDaysBackgroundColor] = useState(config.daysBackgroundColor);
     let [hoursBackgroundColor, setHoursBackgroundColor] = useState(config.hoursBackgroundColor);
@@ -81,6 +126,10 @@ const CountdownApp = (props) => {
     let [secondsBackgroundTemplate, setSecondsBackgroundTemplate] = useState(config.SecondsBackgroundTemplate);
     let [backgroundTemplate, setBackgroundTemplate] = useState(config.backgroundTemplate);
     let [buyNowBtnBackgroundTemplate, setBuyNowBtnBackgroundTemplate] = useState(config.buyNowBtnBackgroundTemplate);
+
+    function returnStringDateFrom(TS){
+      return new Date(TS).toISOString().split('.')[0].slice(0,-3)
+    }
 
     const sizeChoices = [
         {label: 'Small', value: "1"},
@@ -184,7 +233,13 @@ const CountdownApp = (props) => {
                         <ChoiceList title="Countdown Size" choices={sizeChoices} 
                         onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
                         selected={sizeSchema} />
-                        <input type="datetime-local" value={new Date(endTime)} onChange={(e) => setEndTime(e)} min={Date.now()} />
+                        <input type="datetime-local" 
+                        value={returnStringDateFrom(endTime)} 
+                        onChange={(e) => {
+                          setEndTime(new Date(e.target.value).getTime());
+                          
+                        }} 
+                        min={Date.now()} />
                     </Card>
                     <br />
                         {selectionState === 0 && (
