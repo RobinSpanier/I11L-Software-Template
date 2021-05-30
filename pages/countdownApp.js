@@ -9,36 +9,36 @@ const CountdownApp = (props) => {
     
     const config = props.configuration;
 
+    const timezoneOffsetInMS = new Date().getTimezoneOffset() * 60 * 1000;
+
     
 
     let [endTime, setEndTime] = useState(config.endTime);
+    let [endTimeToday, setEndTimeToday] = useState(returnTimeTodayFor(config.endTime) - timezoneOffsetInMS);
+    let [startTime, setStartTime] = useState(config.startTime);
+    let [startTimeToday, setStartTimeToday] = useState(returnTimeTodayFor(config.startTime) - timezoneOffsetInMS);
     let [diff, setDiff] = useState(endTime - new Date().getTime());
     let [days, setDays] = useState(Math.floor(diff / (1000 * 60 * 60 * 24)));
     let [hours, setHours] = useState(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
     let [minutes, setMinutes] = useState(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
     let [seconds, setSeconds] = useState(Math.floor((diff % (1000 * 60)) / 1000));
 
-    
-    // timerRef = setTimeout(function () {
-    //     today = new Date().getTime();
-    //     diff = endTime - today;
-    //     console.log(diff);
-    //     setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
-    //     setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-    //     setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-    //     setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
-        
-    // }, 1000);
-
+    function timestampFrom(hourMinuteString){
+      const hour = hourMinuteString.slice(0,-3);
+      const min = hourMinuteString.slice(-2);
+      return hour*60*60*1000 + min*60*1000;
+    }
+    function returnTimeTodayFor(datetime){
+      const dateString = returnStringTimeFrom(datetime);
+      const newTS = timestampFrom(dateString);
+      return newTS;
+      
+    }
     function useInterval(callback, delay) {
       const savedCallback = useRef();
-    
-      // Remember the latest callback.
       useEffect(() => {
         savedCallback.current = callback;
       }, [callback]);
-    
-      // Set up the interval.
       useEffect(() => {
         function tick() {
           savedCallback.current();
@@ -51,84 +51,62 @@ const CountdownApp = (props) => {
     }
 
     useInterval(() => {
-      console.log(diff);
-      setDiff(endTime - new Date().getTime());
       setTime()
-    }, 1000);
+    }, 50);
 
     function setTime(){
-      setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
-      setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-      setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-      setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
+      setDiff(endTime - new Date().getTime());      
+      if(endTime - new Date().getTime() > 0){
+        setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
+        setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+        setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
+      }else{
+        setDays(0);
+        setHours(0);
+        setMinutes(0);
+        setSeconds(0);
+      }
     }
 
-    // useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     console.log("the diff", diff);
-    //     setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
-    //     setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-    //     setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-    //     setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
-    //   }, 1000);
-    //   return () => clearInterval(interval);
-    // }, []);
 
-    let [messageText, setMessageText] = useState(config.messageText);
-    
 
-    let [daysBackgroundColor, setDaysBackgroundColor] = useState(config.daysBackgroundColor);
-    let [hoursBackgroundColor, setHoursBackgroundColor] = useState(config.hoursBackgroundColor);
-    let [minutesBackgroundColor, setMinutesBackgroundColor] = useState(config.minutesBackgroundColor);
-    let [secondsBackgroundColor, setSecondsBackgroundColor] = useState(config.secondsBackgroundColor);
-    let [buyNowBtnBackgroundColor, setBuyNowBtnBackgroundColor] = useState(config.buyNowBtnBackgroundColor);
-    let [containerBackgroundColor, setBackgroundColor] = useState(config.backgroundColor);
-
-    let [daysLabelTextColor, setDaysLabelTextColor] = useState(config.daysLabelTextColor);
-    let [hoursLabelTextColor, setHoursLabelTextColor] = useState(config.hoursLabelTextColor);
-    let [minutesLabelTextColor, setMinutesLabelTextColor] = useState(config.minutesLabelTextColor);
-    let [secondsLabelTextColor, setSecondsLabelTextColor] = useState(config.secondsLabelTextColor);
-
-    let [daysCountTextColor, setDaysCountTextColor] = useState(config.daysCountTextColor);
-    let [hoursCountTextColor, setHoursCountTextColor] = useState(config.hoursCountTextColor);
-    let [minutesCountTextColor, setMinutesCountTextColor] = useState(config.minutesCountTextColor);
-    let [secondsCountTextColor, setSecondsCountTextColor] = useState(config.secondsCountTextColor);
-
-    let [messageTextColor, setMessageTextColor] = useState(config.messageTextColor);
-    let [buyNowBtnTextColor, setBuyNowBtnTextColor] = useState(config.buyNowBtnTextColor);
-
-    let [buyNowBtnText, setBuyNowBtnText] = useState(config.buyNowBtnText);
-
-    let [selectionState, setSelectionState] = useState(0);
-
-    let [sizeSchema, setSizeSchema] = useState(config.sizeSchema);
-
-    let [numbersCountFont, setNumbersCountFont] = useState("40px");
-    let [labelFont, setLabelFont] = useState("16px");
-    let [messageFont, setMessageFont] = useState("20px");
-    let [messageLineHeight, setMessageLineHeight] = useState("92px");
-    let [buyNowBtnFont, setBuyNowBtnFont] = useState("24px");
-    let [buyNowBtnHeight, setBuyNowBtnHeight] = useState("78px");
-    let [buyNowBtnTop, setBuyNowBtnTop] = useState("4px");
-    let [numbersLineHeight, setNumbersLineHeight] = useState("48px");
-
-    let [daysText, setDaysText] = useState(config.daysText);
-    let [hoursText, setHoursText] = useState(config.hoursText);
-    let [minutesText, setMinutesText] = useState(config.minutesText);
-    let [secondsText, setSecondsText] = useState(config.secondsText);
-    let [positionSchema, setPositionSchema] = useState(config.positionSchema);
-
-    
-
-    let [daysBackgroundTemplate, setDaysBackgroundTemplate] = useState(config.daysBackgroundTemplate);
-    let [hoursBackgroundTemplate, setHoursBackgroundTemplate] = useState(config.HoursBackgroundTemplate);
-    let [minutesBackgroundTemplate, setMinutesBackgroundTemplate] = useState(config.MinutesBackgroundTemplate);
-    let [secondsBackgroundTemplate, setSecondsBackgroundTemplate] = useState(config.SecondsBackgroundTemplate);
-    let [backgroundTemplate, setBackgroundTemplate] = useState(config.backgroundTemplate);
-    let [buyNowBtnBackgroundTemplate, setBuyNowBtnBackgroundTemplate] = useState(config.buyNowBtnBackgroundTemplate);
-
+    function returnStringTimeFrom(TS){
+      return new Date(TS).toISOString().slice(-13,-8);
+    }
     function returnStringDateFrom(TS){
-      return new Date(TS).toISOString().split('.')[0].slice(0,-3)
+      return new Date(TS).toISOString().split('.')[0].slice(0,-9);
+    }
+
+    function applyEndTimeAndSetDate(hourMinuteString){
+      const endDateTS = (new Date(new Date(endTime).toLocaleDateString())).getTime();
+      let newEndTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
+      let newEndTimeTS = newEndTimeToday+endDateTS;
+      const newStartTime = Date.now();
+      if(newEndTimeTS < newStartTime){
+        newEndTimeTS =  newStartTime;
+        newEndTimeToday = returnTimeTodayFor(newStartTime) - timezoneOffsetInMS;
+      }
+      setEndTimeToday(newEndTimeToday);
+      setEndTime(newEndTimeTS);
+      updateConfigurationObject("endTime",newEndTimeTS);
+    }
+
+    function applyStartTimeAndSetDate(hourMinuteString){
+      const startDateTS = (new Date(new Date(startTime).toLocaleDateString())).getTime();
+      let newStartTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
+      let newStartTimeTS = newStartTimeToday+startDateTS;
+      
+      if(endTime < newStartTimeTS){
+        newEndTimeToday = returnTimeTodayFor(newStartTimeTS) - timezoneOffsetInMS;
+        setEndTimeToday(newEndTimeToday);
+        updateConfigurationObject("endTime",newEndTimeTS);
+      }
+      setStartTimeToday(newStartTimeToday);
+      
+      setEndTime(newStartTimeTS);
+      
+      updateConfigurationObject("startTime",newStartTimeTS);
     }
 
     const sizeChoices = [
@@ -136,8 +114,6 @@ const CountdownApp = (props) => {
         {label: 'Normal', value: "2"},
         {label: 'Large', value: "3"}
     ]
-    const gradient_1 = 'linear-gradient(170deg, rgba(49, 57, 73, 0.8) 20%, rgba(49, 57, 73, 0.5) 20%, rgba(49, 57, 73, 0.5) 35%, rgba(41, 48, 61, 0.6) 35%, rgba(41, 48, 61, 0.8) 45%, rgba(31, 36, 46, 0.5) 45%, rgba(31, 36, 46, 0.8) 75%, rgba(49, 57, 73, 0.5) 75%), linear-gradient(45deg, rgba(20, 24, 31, 0.8) 0%, rgba(41, 48, 61, 0.8) 50%, rgba(82, 95, 122, 0.8) 50%, rgba(133, 146, 173, 0.8) 100%)';
-
 
     const colorPalette = [
         "#FF0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"
@@ -154,7 +130,6 @@ const CountdownApp = (props) => {
                 setBuyNowBtnFont("18px");
                 setBuyNowBtnHeight("63px");
                 setBuyNowBtnTop("4px");
-                    
                 break;
             case 2:
                 setNumbersCountFont("30px");
@@ -177,17 +152,18 @@ const CountdownApp = (props) => {
                 setBuyNowBtnTop("8px");
                 break;
             default:
-                setNumbersCountFont("40px");
-                setNumbersLineHeight("48px");
+                setNumbersCountFont("30px");
+                setNumbersLineHeight("42px");
                 setLabelFont("16px");
                 setMessageFont("18px");
-                setMessageLineHeight("92px");
-                setBuyNowBtnFont("24px");
-                setBuyNowBtnHeight("78px");
+                setMessageLineHeight("86px");
+                setBuyNowBtnFont("20px");
+                setBuyNowBtnHeight("70px");
                 setBuyNowBtnTop("4px");
-                break;
         }
     }
+
+    
 
     const updateConfigurationObject = (key, value) => {
         const newConfiguration = {
@@ -197,8 +173,57 @@ const CountdownApp = (props) => {
             daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
             containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, secondsBackgroundColor, buyNowBtnBackgroundColor};
         newConfiguration[key] = value;
+        if(endTime < startTime){
+          setEndTime(startTime);
+          setStartTimeToday(returnTimeTodayFor(config.startTime) - timezoneOffsetInMS)
+          newConfiguration.endTime = endTime;
+        }
         props.onChangeValue(newConfiguration);
     }
+
+    let [messageText, setMessageText] = useState(config.messageText);
+    let [daysBackgroundColor, setDaysBackgroundColor] = useState(config.daysBackgroundColor);
+    let [hoursBackgroundColor, setHoursBackgroundColor] = useState(config.hoursBackgroundColor);
+    let [minutesBackgroundColor, setMinutesBackgroundColor] = useState(config.minutesBackgroundColor);
+    let [secondsBackgroundColor, setSecondsBackgroundColor] = useState(config.secondsBackgroundColor);
+    let [buyNowBtnBackgroundColor, setBuyNowBtnBackgroundColor] = useState(config.buyNowBtnBackgroundColor);
+    let [containerBackgroundColor, setBackgroundColor] = useState(config.backgroundColor);
+    let [daysLabelTextColor, setDaysLabelTextColor] = useState(config.daysLabelTextColor);
+    let [hoursLabelTextColor, setHoursLabelTextColor] = useState(config.hoursLabelTextColor);
+    let [minutesLabelTextColor, setMinutesLabelTextColor] = useState(config.minutesLabelTextColor);
+    let [secondsLabelTextColor, setSecondsLabelTextColor] = useState(config.secondsLabelTextColor);
+    let [daysCountTextColor, setDaysCountTextColor] = useState(config.daysCountTextColor);
+    let [hoursCountTextColor, setHoursCountTextColor] = useState(config.hoursCountTextColor);
+    let [minutesCountTextColor, setMinutesCountTextColor] = useState(config.minutesCountTextColor);
+    let [secondsCountTextColor, setSecondsCountTextColor] = useState(config.secondsCountTextColor);
+    let [messageTextColor, setMessageTextColor] = useState(config.messageTextColor);
+    let [buyNowBtnTextColor, setBuyNowBtnTextColor] = useState(config.buyNowBtnTextColor);
+    let [buyNowBtnText, setBuyNowBtnText] = useState(config.buyNowBtnText);
+    let [selectionState, setSelectionState] = useState(0);
+    let [sizeSchema, setSizeSchema] = useState(config.sizeSchema);
+    let [numbersCountFont, setNumbersCountFont] = useState("40px");
+    let [labelFont, setLabelFont] = useState("16px");
+    let [messageFont, setMessageFont] = useState("20px");
+    let [messageLineHeight, setMessageLineHeight] = useState("92px");
+    let [buyNowBtnFont, setBuyNowBtnFont] = useState("24px");
+    let [buyNowBtnHeight, setBuyNowBtnHeight] = useState("78px");
+    let [buyNowBtnTop, setBuyNowBtnTop] = useState("4px");
+    let [numbersLineHeight, setNumbersLineHeight] = useState("48px");
+    let [daysText, setDaysText] = useState(config.daysText);
+    let [hoursText, setHoursText] = useState(config.hoursText);
+    let [minutesText, setMinutesText] = useState(config.minutesText);
+    let [secondsText, setSecondsText] = useState(config.secondsText);
+    let [positionSchema, setPositionSchema] = useState(config.positionSchema);
+    let [daysBackgroundTemplate, setDaysBackgroundTemplate] = useState(config.daysBackgroundTemplate);
+    let [hoursBackgroundTemplate, setHoursBackgroundTemplate] = useState(config.HoursBackgroundTemplate);
+    let [minutesBackgroundTemplate, setMinutesBackgroundTemplate] = useState(config.MinutesBackgroundTemplate);
+    let [secondsBackgroundTemplate, setSecondsBackgroundTemplate] = useState(config.SecondsBackgroundTemplate);
+    let [backgroundTemplate, setBackgroundTemplate] = useState(config.backgroundTemplate);
+    let [buyNowBtnBackgroundTemplate, setBuyNowBtnBackgroundTemplate] = useState(config.buyNowBtnBackgroundTemplate);
+
+    useEffect(()=>{
+      applySizeSchema(sizeSchema);
+    })
 
     return ( 
         <div>  
@@ -233,13 +258,40 @@ const CountdownApp = (props) => {
                         <ChoiceList title="Countdown Size" choices={sizeChoices} 
                         onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
                         selected={sizeSchema} />
-                        <input type="datetime-local" 
+                        <input type="date" 
+                        value={returnStringDateFrom(startTime)} 
+                        onChange={(e) => {
+                          setStartTime(new Date(e.target.value).getTime());
+                          updateConfigurationObject("startTime",new Date(e.target.value).getTime());
+                        }} 
+                        max={returnStringDateFrom(endTime)} 
+                        />
+                        <input type="time"
+                        value={returnStringTimeFrom(startTimeToday)}
+                        onChange={(e)=>{
+                          applyEndTimeAndSetDate(e.target.value);
+                        }} 
+                        max={returnStringTimeFrom(endTime-timezoneOffsetInMS)} 
+                        />
+                        <br />
+                        <br />
+                        <input type="date" 
                         value={returnStringDateFrom(endTime)} 
                         onChange={(e) => {
                           setEndTime(new Date(e.target.value).getTime());
-                          
+                          updateConfigurationObject("endTime",new Date(e.target.value).getTime());
                         }} 
-                        min={Date.now()} />
+                        min={returnStringDateFrom(startTime)} 
+                        />
+                        <input type="time"
+                        value={returnStringTimeFrom(endTimeToday)}
+                        onChange={(e)=>{
+                          applyStartTimeAndSetDate(e.target.value);
+                        }} 
+                        min={returnStringTimeFrom(startTime-timezoneOffsetInMS)} 
+                        />
+                        
+
                     </Card>
                     <br />
                         {selectionState === 0 && (
@@ -247,7 +299,7 @@ const CountdownApp = (props) => {
                                 <TextContainer>
                                     <Heading>Nothing selected</Heading>
                                     <p>
-                                        Click on the Countdown preview to select a element for styling.
+                                        Click on your Countdown preview!
                                     </p>
                                 </TextContainer>
                             </div>
@@ -430,6 +482,7 @@ const CountdownApp = (props) => {
             </form>
         </div>
      );
+     
 
 }
  

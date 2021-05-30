@@ -18,7 +18,8 @@ class Index extends React.Component{
   // }
   config = {
     endTime: new Date().getTime()+1000*60*30,
-    sizeSchema: "1",
+    startTime: Date.now(),
+    sizeSchema: "2",
     positionSchema: 0,
     messageText: "a new special offer!",
     buyNowBtnText: "buy now",
@@ -67,6 +68,7 @@ class Index extends React.Component{
 
   handleChangeValue = e => {
     this.config = e;
+    console.log(this.config);
   };
   render(){
    
@@ -77,7 +79,6 @@ class Index extends React.Component{
         <TitleBar
           primaryAction={primaryAction}
         />
-
         <CountdownApp 
           configuration={this.config}
           onChangeValue={this.handleChangeValue}
