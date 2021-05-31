@@ -68,7 +68,7 @@ class Index extends React.Component{
 
   handleChangeValue = e => {
     this.config = e;
-    console.log(this.config);
+    // console.log(this.config);
   };
   render(){
    

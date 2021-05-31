@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
+import { set } from 'js-cookie';
 
 const CountdownApp = (props) => {
 
@@ -17,7 +18,7 @@ const CountdownApp = (props) => {
     let [endTimeToday, setEndTimeToday] = useState(returnTimeTodayFor(config.endTime) - timezoneOffsetInMS);
     let [startTime, setStartTime] = useState(config.startTime);
     let [startTimeToday, setStartTimeToday] = useState(returnTimeTodayFor(config.startTime) - timezoneOffsetInMS);
-    let [diff, setDiff] = useState(endTime - new Date().getTime());
+    let [diff, setDiff] = useState(endTime - startTime);
     let [days, setDays] = useState(Math.floor(diff / (1000 * 60 * 60 * 24)));
     let [hours, setHours] = useState(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
     let [minutes, setMinutes] = useState(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
@@ -54,14 +55,27 @@ const CountdownApp = (props) => {
       setTime()
     }, 50);
 
+
+
     function setTime(){
-      setDiff(endTime - new Date().getTime());      
-      if(endTime - new Date().getTime() > 0){
+      if(startTime < Date.now()){
+        setStartTime(Date.now());
+      }
+      let adjustedStartTime = startTime - (startTime - Date.now());
+      // console.log("difference",startTime - Date.now());
+      setDiff(endTime - adjustedStartTime);    
+      
+      // if(endTime < adjustedStartTime){
+      //   setEndTimeToday(startTimeToday);
+      //   setEndTime(startTime);
+      // }  
+      if(endTime - adjustedStartTime > 0){
         setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
         setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
         setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
         setSeconds(Math.floor((diff % (1000 * 60)) / 1000));
       }else{
+        setStartTimeToday(returnTimeTodayFor(Date.now()) - timezoneOffsetInMS);
         setDays(0);
         setHours(0);
         setMinutes(0);
@@ -83,12 +97,14 @@ const CountdownApp = (props) => {
       let newEndTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
       let newEndTimeTS = newEndTimeToday+endDateTS;
       const newStartTime = Date.now();
+      console.log("updato");
       if(newEndTimeTS < newStartTime){
         newEndTimeTS =  newStartTime;
         newEndTimeToday = returnTimeTodayFor(newStartTime) - timezoneOffsetInMS;
       }
       setEndTimeToday(newEndTimeToday);
       setEndTime(newEndTimeTS);
+ 
       updateConfigurationObject("endTime",newEndTimeTS);
     }
 
@@ -98,14 +114,15 @@ const CountdownApp = (props) => {
       let newStartTimeTS = newStartTimeToday+startDateTS;
       
       if(endTime < newStartTimeTS){
-        newEndTimeToday = returnTimeTodayFor(newStartTimeTS) - timezoneOffsetInMS;
-        setEndTimeToday(newEndTimeToday);
-        updateConfigurationObject("endTime",newEndTimeTS);
+        const newEndTime = returnTimeTodayFor(newStartTimeTS) - timezoneOffsetInMS;
+        setEndTimeToday(newEndTime);
+        setEndTime(newStartTimeTS);
+        updateConfigurationObject("endTime",newEndTime);
       }
+      setStartTime(newStartTimeTS);
       setStartTimeToday(newStartTimeToday);
-      
-      setEndTime(newStartTimeTS);
-      
+      let adjustedStartTime = startTime - (startTime - Date.now());
+      setDiff(endTime - adjustedStartTime); 
       updateConfigurationObject("startTime",newStartTimeTS);
     }
 
@@ -269,7 +286,7 @@ const CountdownApp = (props) => {
                         <input type="time"
                         value={returnStringTimeFrom(startTimeToday)}
                         onChange={(e)=>{
-                          applyEndTimeAndSetDate(e.target.value);
+                          applyStartTimeAndSetDate(e.target.value);
                         }} 
                         max={returnStringTimeFrom(endTime-timezoneOffsetInMS)} 
                         />
@@ -286,7 +303,7 @@ const CountdownApp = (props) => {
                         <input type="time"
                         value={returnStringTimeFrom(endTimeToday)}
                         onChange={(e)=>{
-                          applyStartTimeAndSetDate(e.target.value);
+                          applyEndTimeAndSetDate(e.target.value);
                         }} 
                         min={returnStringTimeFrom(startTime-timezoneOffsetInMS)} 
                         />
