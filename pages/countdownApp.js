@@ -58,18 +58,8 @@ const CountdownApp = (props) => {
 
 
     function setTime(){
-      if(startTime < Date.now()){
-        setStartTime(Date.now());
-      }
-      let adjustedStartTime = startTime - (startTime - Date.now());
-      // console.log("difference",startTime - Date.now());
-      setDiff(endTime - adjustedStartTime);    
-      
-      // if(endTime < adjustedStartTime){
-      //   setEndTimeToday(startTimeToday);
-      //   setEndTime(startTime);
-      // }  
-      if(endTime - adjustedStartTime > 0){
+      setDiff(endTime - Date.now());    
+      if(endTime - Date.now() > 0){
         setDays(Math.floor(diff / (1000 * 60 * 60 * 24)));
         setHours(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
         setMinutes(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
@@ -275,14 +265,14 @@ const CountdownApp = (props) => {
                         <ChoiceList title="Countdown Size" choices={sizeChoices} 
                         onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
                         selected={sizeSchema} />
-                        <input type="date" 
+                        {/* <input type="date" 
                         value={returnStringDateFrom(startTime)} 
                         onChange={(e) => {
                           setStartTime(new Date(e.target.value).getTime());
                           updateConfigurationObject("startTime",new Date(e.target.value).getTime());
                         }} 
                         max={returnStringDateFrom(endTime)} 
-                        />
+                        /> 
                         <input type="time"
                         value={returnStringTimeFrom(startTimeToday)}
                         onChange={(e)=>{
@@ -291,7 +281,7 @@ const CountdownApp = (props) => {
                         max={returnStringTimeFrom(endTime-timezoneOffsetInMS)} 
                         />
                         <br />
-                        <br />
+                        <br /> */}
                         <input type="date" 
                         value={returnStringDateFrom(endTime)} 
                         onChange={(e) => {
