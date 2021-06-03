@@ -48,7 +48,7 @@ class Index extends React.Component{
     minutesBackgroundTemplate: null,
     secondsBackgroundTemplate: null,
     backgroundTemplate: null,
-    buyNowBtnBackgroundTemplate: null
+    buyNowBtnBackgroundTemplate: null,
   }
 
   setScriptTag(e){

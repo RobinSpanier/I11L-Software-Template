@@ -40,6 +40,11 @@ display: grid;
 grid-template-columns: max-content max-content max-content;
 gap: 32px 48px;
 }
+.quickEditGrid{
+  display: grid;
+  gap: 32px 48px;
+  grid-template-columns: max-content max-content 1fr;
+}
 .colorDescription{
   font-weight: 600;
 margin-bottom: 16px;
@@ -152,7 +157,6 @@ width: 212px !important;
 }
 
 
-
 .buyNowBtn:before {
   position: absolute;
   height: 100%;
@@ -250,3 +254,4 @@ width: 212px !important;
     grid-template-columns: 1fr;
   }
 }
+

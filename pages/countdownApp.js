@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList, Banner } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
+import ClickHereImage from '../public/clickHereImage';
+
 
 
 const CountdownApp = (props) => {
@@ -174,7 +176,8 @@ const CountdownApp = (props) => {
             hoursText,minutesText,secondsText,messageTextColor,buyNowBtnTextColor,
             daysCountTextColor,hoursCountTextColor,minutesCountTextColor,secondsCountTextColor,
             daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
-            containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, secondsBackgroundColor, buyNowBtnBackgroundColor};
+            containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, 
+            secondsBackgroundColor, buyNowBtnBackgroundColor};
         newConfiguration[key] = value;
         if(endTime < startTime){
           setEndTime(startTime);
@@ -276,7 +279,7 @@ const CountdownApp = (props) => {
                 
                 
                     <Card title="Quickedit" sectioned>
-                      <div className="oneThirdGrid">
+                      <div className="quickEditGrid">
                         <div>
 
                           <ChoiceList title="Countdown size" choices={sizeChoices} 
@@ -316,8 +319,10 @@ const CountdownApp = (props) => {
                           
                           
                         </div>
-                        <div>
-
+                        <div style={{transform: "translateY(-32px)"}}>
+                          {selectionState === 0 &&(
+                            <ClickHereImage />
+                          )}
                         </div>
                       </div>
 
@@ -360,9 +365,7 @@ const CountdownApp = (props) => {
                                 <div>
 
                                 </div>
-                                
-                                
-                                
+
                                 </div>
                             </Card>
 
@@ -484,8 +487,8 @@ const CountdownApp = (props) => {
                             </Card>
                         )}
                         {selectionState === 6 && (
-                            <Card title="Button Edit" sectioned>
-                                <TextField label="Button Text" value={buyNowBtnText} 
+                            <Card title="Call to action" sectioned>
+                                <TextField label="Call to action Text" value={buyNowBtnText} 
                                 onChange={(e) => {setBuyNowBtnText(e);updateConfigurationObject("buyNowBtnText",e)}} inputMode="text" maxLength={15} />
                                 <div className="oneThirdGrid">
                                     <div>
