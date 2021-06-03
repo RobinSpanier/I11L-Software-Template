@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList } from '@shopify/polaris';
+import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList, Banner } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
 import { set } from 'js-cookie';
@@ -79,19 +79,14 @@ const CountdownApp = (props) => {
       return new Date(TS).toISOString().slice(-13,-8);
     }
     function returnStringDateFrom(TS){
-      return new Date(TS).toISOString().split('.')[0].slice(0,-9);
+      return new Date(TS).toISOString().split('.')[0].slice(0,-3);
     }
 
     function applyEndTimeAndSetDate(hourMinuteString){
       const endDateTS = (new Date(new Date(endTime).toLocaleDateString())).getTime();
       let newEndTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
       let newEndTimeTS = newEndTimeToday+endDateTS;
-      const newStartTime = Date.now();
-      console.log("updato");
-      if(newEndTimeTS < newStartTime){
-        newEndTimeTS =  newStartTime;
-        newEndTimeToday = returnTimeTodayFor(newStartTime) - timezoneOffsetInMS;
-      }
+
       setEndTimeToday(newEndTimeToday);
       setEndTime(newEndTimeTS);
  
@@ -258,13 +253,28 @@ const CountdownApp = (props) => {
                     <div title="Click to Edit the Buy Now action Button"><button   onClick={(e) => {setSelectionState(6); e.stopPropagation();}} className='buyNowBtn animated tada' style={{backgroundColor: buyNowBtnBackgroundColor, color: buyNowBtnTextColor, fontSize: buyNowBtnFont, height: buyNowBtnHeight, top: buyNowBtnTop}} id='BuyNowButton'>{buyNowBtnText}</button></div>
                 </div>
             </div>
-
+            
             <form>
                 <Page fullWidth>
+                  {startTime > Date.now() && (
+                    <Banner title="Countdown starts soon" status="info">
+                      <p>Countdown startdate: {new Date(startTime).toLocaleString()}</p>
+                    </Banner>
+                  )}
+                <Banner title="Countdown expired" status="warning">
+                  <p>Your Countdown Expirered and is no longer visible to your Customers, chose a new end date.</p>
+                </Banner>
+                <br />
                     <Card title="Quickedit" sectioned>
-                        <ChoiceList title="Countdown Size" choices={sizeChoices} 
-                        onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
-                        selected={sizeSchema} />
+                      <div className="oneThirdGrid">
+                        <div>
+                          <p className="columnDescription">
+                            Countdown Size
+                          </p>
+                          <ChoiceList choices={sizeChoices} 
+                          onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
+                          selected={sizeSchema} />
+                        </div>
                         {/* <input type="date" 
                         value={returnStringDateFrom(startTime)} 
                         onChange={(e) => {
@@ -282,22 +292,26 @@ const CountdownApp = (props) => {
                         />
                         <br />
                         <br /> */}
-                        <input type="date" 
-                        value={returnStringDateFrom(endTime)} 
-                        onChange={(e) => {
-                          setEndTime(new Date(e.target.value).getTime());
-                          updateConfigurationObject("endTime",new Date(e.target.value).getTime());
-                        }} 
-                        min={returnStringDateFrom(startTime)} 
-                        />
-                        <input type="time"
-                        value={returnStringTimeFrom(endTimeToday)}
-                        onChange={(e)=>{
-                          applyEndTimeAndSetDate(e.target.value);
-                        }} 
-                        min={returnStringTimeFrom(startTime-timezoneOffsetInMS)} 
-                        />
-                        
+                        <div>
+                        <p className="columnDescription">
+                          Date Settings
+                        </p>
+                          <label>End Date
+                            <br />
+                            <input type="datetime-local"
+                            value={returnStringDateFrom(endTime)} 
+                            onChange={(e) => {
+                              setEndTime(new Date(e.target.value).getTime());
+                              updateConfigurationObject("endTime",new Date(e.target.value).getTime());
+                            }} 
+                            min={returnStringDateFrom(startTime)} 
+                            />
+                          </label>
+
+                          
+                          
+                        </div>
+                      </div>
 
                     </Card>
                     <br />

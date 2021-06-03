@@ -41,8 +41,14 @@ grid-template-columns: max-content max-content max-content;
 gap: 32px;
 }
 .colorDescription{
+  font-weight: 600;
 margin-bottom: 16px;
 margin-top: 16px;
+}
+.columnDescription{
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 0px;
 }
 .days:hover,.hours:hover,.minutes:hover,.seconds:hover, .buyNowBtn:hover{
 outline: #006E52 solid 3px;
