@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList, Banner } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
-import { set } from 'js-cookie';
+
 
 const CountdownApp = (props) => {
 
@@ -53,7 +53,7 @@ const CountdownApp = (props) => {
 
     useInterval(() => {
       setTime()
-    }, 50);
+    }, 100);
 
 
 
@@ -118,7 +118,8 @@ const CountdownApp = (props) => {
     ]
 
     const colorPalette = [
-        "#FF0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"
+        "#D72C0D", "#006E52", "#00A0AC", "#FFEA8A", "#202223",
+        "#FF0000", "#00ff00", "#0000ff", "#ffff00", "#fafafa"
     ]
 
     function applySizeSchema(selection){
@@ -256,60 +257,67 @@ const CountdownApp = (props) => {
             
             <form>
                 <Page fullWidth>
-                  {startTime > Date.now() && (
-                    <Banner title="Countdown starts soon" status="info">
-                      <p>Countdown startdate: {new Date(startTime).toLocaleString()}</p>
-                    </Banner>
+                  {(startTime > endTime || Date.now() > endTime) &&(
+                    <div>
+                      <Banner title="Countdown expired" status="critical">
+                        <p>Countdown endes before start date!</p>
+                      </Banner>
+                      <br />
+                    </div>
                   )}
-                <Banner title="Countdown expired" status="warning">
-                  <p>Your Countdown Expirered and is no longer visible to your Customers, chose a new end date.</p>
-                </Banner>
-                <br />
+                  {startTime > Date.now() && (
+                    <div>
+                      <Banner title="Countdown starts soon" status="info">
+                        <p>Countdown start: {new Date(startTime).toLocaleString()}</p>
+                      </Banner>
+                      <br />
+                    </div>
+                  )}
+                
+                
                     <Card title="Quickedit" sectioned>
                       <div className="oneThirdGrid">
                         <div>
-                          <p className="columnDescription">
-                            Countdown Size
-                          </p>
-                          <ChoiceList choices={sizeChoices} 
+
+                          <ChoiceList title="Countdown size" choices={sizeChoices} 
                           onChange={(selection) => {setSizeSchema(selection[0]); applySizeSchema(selection[0]);updateConfigurationObject("sizeSchema",selection[0])}} 
                           selected={sizeSchema} />
                         </div>
-                        {/* <input type="date" 
-                        value={returnStringDateFrom(startTime)} 
-                        onChange={(e) => {
-                          setStartTime(new Date(e.target.value).getTime());
-                          updateConfigurationObject("startTime",new Date(e.target.value).getTime());
-                        }} 
-                        max={returnStringDateFrom(endTime)} 
-                        /> 
-                        <input type="time"
-                        value={returnStringTimeFrom(startTimeToday)}
-                        onChange={(e)=>{
-                          applyStartTimeAndSetDate(e.target.value);
-                        }} 
-                        max={returnStringTimeFrom(endTime-timezoneOffsetInMS)} 
-                        />
-                        <br />
-                        <br /> */}
+
                         <div>
-                        <p className="columnDescription">
-                          Date Settings
-                        </p>
+
+                          
+                          
                           <label>End Date
                             <br />
                             <input type="datetime-local"
-                            value={returnStringDateFrom(endTime)} 
+                            value={returnStringDateFrom(endTime-timezoneOffsetInMS)} 
                             onChange={(e) => {
-                              setEndTime(new Date(e.target.value).getTime());
-                              updateConfigurationObject("endTime",new Date(e.target.value).getTime());
+                              setEndTime(new Date(e.target.value).getTime())+timezoneOffsetInMS;
+                              updateConfigurationObject("endTime",new Date(e.target.value).getTime()+timezoneOffsetInMS);
                             }} 
-                            min={returnStringDateFrom(startTime)} 
+                            min={returnStringDateFrom(startTime-timezoneOffsetInMS)} 
                             />
+                          </label>
+                          <br /><br />
+                          <label>
+                            Start Date
+                            <br />
+                            <input type="datetime-local" 
+                            value={returnStringDateFrom(startTime-timezoneOffsetInMS)} 
+                            onChange={(e) => {
+                              setStartTime(new Date(e.target.value).getTime()+timezoneOffsetInMS);
+                              updateConfigurationObject("startTime",new Date(e.target.value).getTime()+timezoneOffsetInMS);
+                            }} 
+                            max={returnStringDateFrom(endTime-timezoneOffsetInMS)} 
+                            /> 
                           </label>
 
                           
                           
+                        </div>
+                        <div>
+
                         </div>
                       </div>
 
@@ -320,7 +328,7 @@ const CountdownApp = (props) => {
                                 <TextContainer>
                                     <Heading>Nothing selected</Heading>
                                     <p>
-                                        Click on your Countdown preview!
+                                        Click on your Countdown preview for customization!
                                     </p>
                                 </TextContainer>
                             </div>

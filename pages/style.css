@@ -38,7 +38,7 @@
 .oneThirdGrid{
 display: grid;
 grid-template-columns: max-content max-content max-content;
-gap: 32px;
+gap: 32px 48px;
 }
 .colorDescription{
   font-weight: 600;
