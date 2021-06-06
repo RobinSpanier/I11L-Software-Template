@@ -2,10 +2,12 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList, Banner } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
+import lifecycle from 'react-pure-lifecycle';
 
 import ClickHereImage from '../public/clickHereImage';
 
-
+let globalSetCountdownIsActive;
+let globalSetIsTouchedCallback;
 
 const CountdownApp = (props) => {
 
@@ -14,6 +16,7 @@ const CountdownApp = (props) => {
     
     //default
     const [config, setConfig] = useState(props.configuration);
+    const [isTouchedCallback, setIsTouchedCallback] = useState(props.isTouchedCallback);
 
     function applyConfigurationForCountdownApp(firebaseResponse){
 
@@ -26,6 +29,7 @@ const CountdownApp = (props) => {
       });
       const newConfig = (Object.assign({}, config, ...newConfigArrObj));
       updateStates(newConfig);
+      
       setConfig(newConfig);
     }
   
@@ -42,6 +46,8 @@ const CountdownApp = (props) => {
           
         });
     }, []);
+
+    const [touched, setTouched] = useState(false);
 
 
     
@@ -112,12 +118,24 @@ const CountdownApp = (props) => {
 
 
     function returnStringTimeFrom(TS){
-      TS = parseInt(TS)
-      return new Date(TS).toISOString().slice(-13,-8);
+      
+      try {
+        TS = parseInt(TS)
+        return new Date(TS).toISOString().slice(-13,-8);
+      } catch (error) {
+        return new Date().toISOString().slice(-13,-8);
+      }
+      
     }
     function returnStringDateFrom(TS){
-      TS = parseInt(TS)
-      return new Date(TS).toISOString().split('.')[0].slice(0,-3);
+      
+      try {
+        TS = parseInt(TS)
+        return new Date(TS).toISOString().split('.')[0].slice(0,-3);
+      } catch (error) {
+        return new Date().toISOString().split('.')[0].slice(0,-3);
+      }
+      
     }
 
     function applyEndTimeAndSetDate(hourMinuteString){
@@ -207,18 +225,18 @@ const CountdownApp = (props) => {
     
 
     const updateConfigurationObject = (key, value) => {
-        const newConfiguration = {
-            endTime,sizeSchema,positionSchema,messageText,buyNowBtnText,daysText,
-            hoursText,minutesText,secondsText,messageTextColor,buyNowBtnTextColor,
-            daysCountTextColor,hoursCountTextColor,minutesCountTextColor,secondsCountTextColor,
-            daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
-            containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, 
-            secondsBackgroundColor, buyNowBtnBackgroundColor};
-        if(key){
-          newConfiguration[key] = value;
-        }
-
-        props.onChangeValue(newConfiguration);
+      setTouched(true);
+      const newConfiguration = {
+        endTime,sizeSchema,positionSchema,messageText,buyNowBtnText,daysText,
+        hoursText,minutesText,secondsText,messageTextColor,buyNowBtnTextColor,
+        daysCountTextColor,hoursCountTextColor,minutesCountTextColor,secondsCountTextColor,
+        daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
+        containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, 
+        secondsBackgroundColor, buyNowBtnBackgroundColor};
+      if(key){
+        newConfiguration[key] = value;
+      }
+      props.onChangeValue({config: newConfiguration, isTouched: true});
     }
 
     let [messageText, setMessageText] = useState(config.messageText);
@@ -305,10 +323,20 @@ const CountdownApp = (props) => {
     }
 
     useEffect(()=>{
+      globalSetCountdownIsActive = setCountdownIsActive;
+      globalSetIsTouchedCallback = setIsTouchedCallback;
       applySizeSchema(sizeSchema);
+
+      return () => globalSetCountdownIsActive = null
     })
 
+
+
+    
+    
+
     return ( 
+      
         <div>  
             <div onClick={() => setSelectionState(1)} className="container" style={{background: backgroundTemplate, backgroundColor: containerBackgroundColor}}>
                 <div id="Timer">
@@ -345,16 +373,25 @@ const CountdownApp = (props) => {
                       <br />
                     </div>
                   )}
-                  {startTime > Date.now() && countdownIsActive && (
+                  {isTouchedCallback && (
                     <div>
-                      <Banner title="Countdown starts soon" status="info">
+                      <Banner title="Unsafed Changes" status="info">
+                        <p>Press Save and Apply to save your Countdown and Apply it in your Store</p>
+                      </Banner>
+                      <br />
+                    </div>
+                  )}
+                  {startTime > Date.now() && countdownIsActive && !isTouchedCallback && (
+                    <div>
+                      <Banner title="Countdown starts soon" status="success">
+                        
                         <p>Countdown start: {new Date(startTime).toLocaleString()}</p>
                         <p>Countdown end: {new Date(endTime).toLocaleString()}</p>
                       </Banner>
                       <br />
                     </div>
                   )}
-                  {startTime <= Date.now() && countdownIsActive && (
+                  {startTime <= Date.now() && countdownIsActive && !isTouchedCallback && (
                     <div>
                       <Banner title="Countdown is active" status="success">
                         <p>Countdown start: {new Date(startTime).toLocaleString()}</p>
@@ -407,7 +444,7 @@ const CountdownApp = (props) => {
                           
                         </div>
                         <div style={{transform: "translateY(-32px)"}}>
-                          {selectionState === 0 && !countdownIsActive &&(
+                          {selectionState === 0  &&(
                             <ClickHereImage />
                           )}
                         </div>
@@ -605,5 +642,15 @@ const CountdownApp = (props) => {
      
 
 }
+
+const methods = {
+  componentDidUpdate(props){
+    console.log("component did update",props);
+    globalSetCountdownIsActive(props.countdownIsActive);
+    globalSetIsTouchedCallback(props.isTouchedCallback);
+    
+  }
+}
+
  
-export default CountdownApp;
+export default lifecycle(methods)(CountdownApp);
