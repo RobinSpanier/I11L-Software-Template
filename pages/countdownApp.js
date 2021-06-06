@@ -2,15 +2,49 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { TextField, Heading, TextStyle, Card,TextContainer, Page, ChoiceList, Banner } from '@shopify/polaris';
 import React from 'react';
 import {BlockPicker} from 'react-color'
+
 import ClickHereImage from '../public/clickHereImage';
 
 
 
 const CountdownApp = (props) => {
 
+
   
     
-    const config = props.configuration;
+    //default
+    const [config, setConfig] = useState(props.configuration);
+
+    function applyConfigurationForCountdownApp(firebaseResponse){
+
+      let fieldKeys = Object.keys(firebaseResponse.fields);
+      let newConfigArrObj = [];
+      fieldKeys.forEach(field => {
+        newConfigArrObj.push(
+            {[field]: Object.values(firebaseResponse.fields[field])[0]}
+          )
+      });
+      const newConfig = (Object.assign({}, config, ...newConfigArrObj));
+      updateStates(newConfig);
+      setConfig(newConfig);
+    }
+  
+
+    useEffect(() => {
+      let shop = "";
+      shop = props.shopOrigin;
+      fetch('https://firestore.googleapis.com/v1/projects/i11l-software/databases/(default)/documents/Countdown-Configuration/'+shop)
+        .then(response => response.json())
+        .then(data => {
+          if(!data.error){
+            applyConfigurationForCountdownApp(data);
+          }
+          
+        });
+    }, []);
+
+
+    
 
     const timezoneOffsetInMS = new Date().getTimezoneOffset() * 60 * 1000;
 
@@ -78,9 +112,11 @@ const CountdownApp = (props) => {
 
 
     function returnStringTimeFrom(TS){
+      TS = parseInt(TS)
       return new Date(TS).toISOString().slice(-13,-8);
     }
     function returnStringDateFrom(TS){
+      TS = parseInt(TS)
       return new Date(TS).toISOString().split('.')[0].slice(0,-3);
     }
 
@@ -178,12 +214,10 @@ const CountdownApp = (props) => {
             daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
             containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, 
             secondsBackgroundColor, buyNowBtnBackgroundColor};
-        newConfiguration[key] = value;
-        if(endTime < startTime){
-          setEndTime(startTime);
-          setStartTimeToday(returnTimeTodayFor(config.startTime) - timezoneOffsetInMS)
-          newConfiguration.endTime = endTime;
+        if(key){
+          newConfiguration[key] = value;
         }
+
         props.onChangeValue(newConfiguration);
     }
 
@@ -220,12 +254,55 @@ const CountdownApp = (props) => {
     let [minutesText, setMinutesText] = useState(config.minutesText);
     let [secondsText, setSecondsText] = useState(config.secondsText);
     let [positionSchema, setPositionSchema] = useState(config.positionSchema);
+    let [countdownIsActive, setCountdownIsActive] = useState(config.countdownIsActive);
     let [daysBackgroundTemplate, setDaysBackgroundTemplate] = useState(config.daysBackgroundTemplate);
     let [hoursBackgroundTemplate, setHoursBackgroundTemplate] = useState(config.HoursBackgroundTemplate);
     let [minutesBackgroundTemplate, setMinutesBackgroundTemplate] = useState(config.MinutesBackgroundTemplate);
     let [secondsBackgroundTemplate, setSecondsBackgroundTemplate] = useState(config.SecondsBackgroundTemplate);
     let [backgroundTemplate, setBackgroundTemplate] = useState(config.backgroundTemplate);
     let [buyNowBtnBackgroundTemplate, setBuyNowBtnBackgroundTemplate] = useState(config.buyNowBtnBackgroundTemplate);
+
+    function updateStates(newConfig){
+      setCountdownIsActive(newConfig.countdownIsActive);
+      setMessageText(newConfig.messageText);
+      setDaysBackgroundColor(newConfig.daysBackgroundColor);
+      setHoursBackgroundColor(newConfig.hoursBackgroundColor);
+      setMinutesBackgroundColor(newConfig.minutesBackgroundColor);
+      setSecondsBackgroundColor(newConfig.secondsBackgroundColor);
+      setBuyNowBtnBackgroundColor(newConfig.buyNowBtnBackgroundColor);
+      setBackgroundColor(newConfig.backgroundColor);
+      setDaysLabelTextColor(newConfig.daysLabelTextColor);
+      setHoursLabelTextColor(newConfig.hoursLabelTextColor);
+      setMinutesLabelTextColor(newConfig.minutesLabelTextColor);
+      setSecondsLabelTextColor(newConfig.secondsLabelTextColor);
+      setDaysCountTextColor(newConfig.daysCountTextColor);
+      setHoursCountTextColor(newConfig.hoursCountTextColor);
+      setMinutesCountTextColor(newConfig.minutesCountTextColor);
+      setSecondsCountTextColor(newConfig.secondsCountTextColor);
+      setMessageTextColor(newConfig.messageTextColor);
+      setBuyNowBtnTextColor(newConfig.buyNowBtnTextColor);
+      setBuyNowBtnText(newConfig.buyNowBtnText);
+      setSizeSchema(newConfig.sizeSchema);
+      setNumbersCountFont(newConfig.numbersCountFont);
+      setLabelFont(newConfig.labelFont);
+      setMessageFont(newConfig.messageFont);
+      setMessageLineHeight(newConfig.messageLineHeight);
+      setBuyNowBtnFont(newConfig.buyNowBtnFont);
+      setBuyNowBtnHeight(newConfig.buyNowBtnHeight);
+      setBuyNowBtnTop(newConfig.buyNowBtnTop);
+      setNumbersLineHeight(newConfig.numbersLineHeight);
+      setDaysText(newConfig.daysText);
+      setHoursText(newConfig.hoursText);
+      setMinutesText(newConfig.minutesText);
+      setSecondsText(newConfig.secondsText);
+      setPositionSchema(newConfig.positionSchema);
+      setDaysBackgroundTemplate(newConfig.daysBackgroundTemplate);
+      setHoursBackgroundTemplate(newConfig.hoursBackgroundTemplate);
+      setMinutesBackgroundTemplate(newConfig.minutesBackgroundTemplate);
+      setSecondsBackgroundTemplate(newConfig.secondsBackgroundTemplate);
+      setBackgroundTemplate(newConfig.backgroundTemplate);
+      setBuyNowBtnBackgroundTemplate(newConfig.buyNowBtnBackgroundTemplate);
+    }
 
     useEffect(()=>{
       applySizeSchema(sizeSchema);
@@ -263,15 +340,25 @@ const CountdownApp = (props) => {
                   {(startTime > endTime || Date.now() > endTime) &&(
                     <div>
                       <Banner title="Countdown expired" status="critical">
-                        <p>Countdown endes before start date!</p>
+                        <p>Chose a new end date</p>
                       </Banner>
                       <br />
                     </div>
                   )}
-                  {startTime > Date.now() && (
+                  {startTime > Date.now() && countdownIsActive && (
                     <div>
                       <Banner title="Countdown starts soon" status="info">
                         <p>Countdown start: {new Date(startTime).toLocaleString()}</p>
+                        <p>Countdown end: {new Date(endTime).toLocaleString()}</p>
+                      </Banner>
+                      <br />
+                    </div>
+                  )}
+                  {startTime <= Date.now() && countdownIsActive && (
+                    <div>
+                      <Banner title="Countdown is active" status="success">
+                        <p>Countdown start: {new Date(startTime).toLocaleString()}</p>
+                        <p>Countdown end: {new Date(endTime).toLocaleString()}</p>
                       </Banner>
                       <br />
                     </div>
@@ -296,8 +383,8 @@ const CountdownApp = (props) => {
                             <input type="datetime-local"
                             value={returnStringDateFrom(endTime-timezoneOffsetInMS)} 
                             onChange={(e) => {
-                              setEndTime(new Date(e.target.value).getTime())+timezoneOffsetInMS;
-                              updateConfigurationObject("endTime",new Date(e.target.value).getTime()+timezoneOffsetInMS);
+                              setEndTime(new Date(e.target.value).getTime());
+                              updateConfigurationObject("endTime",new Date(e.target.value).getTime());
                             }} 
                             min={returnStringDateFrom(startTime-timezoneOffsetInMS)} 
                             />
@@ -309,8 +396,8 @@ const CountdownApp = (props) => {
                             <input type="datetime-local" 
                             value={returnStringDateFrom(startTime-timezoneOffsetInMS)} 
                             onChange={(e) => {
-                              setStartTime(new Date(e.target.value).getTime()+timezoneOffsetInMS);
-                              updateConfigurationObject("startTime",new Date(e.target.value).getTime()+timezoneOffsetInMS);
+                              setStartTime(new Date(e.target.value).getTime());
+                              updateConfigurationObject("startTime",new Date(e.target.value).getTime());
                             }} 
                             max={returnStringDateFrom(endTime-timezoneOffsetInMS)} 
                             /> 
@@ -320,7 +407,7 @@ const CountdownApp = (props) => {
                           
                         </div>
                         <div style={{transform: "translateY(-32px)"}}>
-                          {selectionState === 0 &&(
+                          {selectionState === 0 && !countdownIsActive &&(
                             <ClickHereImage />
                           )}
                         </div>
@@ -328,6 +415,7 @@ const CountdownApp = (props) => {
 
                     </Card>
                     <br />
+                    
                         {selectionState === 0 && (
                             <div className="nothingSelected">
                                 <TextContainer>
