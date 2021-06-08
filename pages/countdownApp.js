@@ -231,7 +231,7 @@ const CountdownApp = (props) => {
         hoursText,minutesText,secondsText,messageTextColor,buyNowBtnTextColor,
         daysCountTextColor,hoursCountTextColor,minutesCountTextColor,secondsCountTextColor,
         daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
-        containerBackgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, 
+        backgroundColor, daysBackgroundColor, hoursBackgroundColor, minutesBackgroundColor, 
         secondsBackgroundColor, buyNowBtnBackgroundColor};
       if(key){
         newConfiguration[key] = value;
@@ -245,7 +245,7 @@ const CountdownApp = (props) => {
     let [minutesBackgroundColor, setMinutesBackgroundColor] = useState(config.minutesBackgroundColor);
     let [secondsBackgroundColor, setSecondsBackgroundColor] = useState(config.secondsBackgroundColor);
     let [buyNowBtnBackgroundColor, setBuyNowBtnBackgroundColor] = useState(config.buyNowBtnBackgroundColor);
-    let [containerBackgroundColor, setBackgroundColor] = useState(config.backgroundColor);
+    let [backgroundColor, setBackgroundColor] = useState(config.backgroundColor);
     let [daysLabelTextColor, setDaysLabelTextColor] = useState(config.daysLabelTextColor);
     let [hoursLabelTextColor, setHoursLabelTextColor] = useState(config.hoursLabelTextColor);
     let [minutesLabelTextColor, setMinutesLabelTextColor] = useState(config.minutesLabelTextColor);
@@ -338,7 +338,7 @@ const CountdownApp = (props) => {
     return ( 
       
         <div>  
-            <div onClick={() => setSelectionState(1)} className="container" style={{background: backgroundTemplate, backgroundColor: containerBackgroundColor}}>
+            <div onClick={() => setSelectionState(1)} className="container" style={{backgroundColor: backgroundColor}}>
                 <div id="Timer">
                     <div className='message' id='Message'style={{color: messageTextColor, fontSize: messageFont, lineHeight: messageLineHeight}}>{messageText}</div>
                     <div>
@@ -476,7 +476,7 @@ const CountdownApp = (props) => {
                                     <p className="colorDescription">
                                         <TextStyle variation="strong">Background Color</TextStyle>
                                     </p>
-                                    <BlockPicker color={containerBackgroundColor} colors={colorPalette} 
+                                    <BlockPicker color={backgroundColor} colors={colorPalette} 
                                     onChangeComplete={(color) => {setBackgroundColor(color.hex);updateConfigurationObject("backgroundColor",color.hex)}} />
                                 </div>
                                 <div>

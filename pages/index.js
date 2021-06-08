@@ -38,7 +38,7 @@ class Index extends React.Component{
     hoursLabelTextColor: "red",
     minutesLabelTextColor: "red",
     secondsLabelTextColor: "red",
-    backgroundColor: "grey",
+    backgroundColor: "red",
     daysBackgroundColor: "yellow",
     hoursBackgroundColor: "yellow",
     minutesBackgroundColor: "yellow",
@@ -60,7 +60,7 @@ class Index extends React.Component{
 
   setScriptTag(e){
     const scriptTagInput = {
-      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v9.js', 
+      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v10.js', 
       displayScope: 'ONLINE_STORE'
     };
     console.log("script tag gesetzt, input:",scriptTagInput);
