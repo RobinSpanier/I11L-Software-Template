@@ -19,7 +19,7 @@ class Index extends React.Component{
 
   config = {
     endTime: new Date().getTime()+1000*60*30,
-    startTime: Date.now(),
+    startTime: new Date().getTime(),
     sizeSchema: "2",
     positionSchema: 0,
     messageText: "a new special offer!",
@@ -60,15 +60,16 @@ class Index extends React.Component{
 
   setScriptTag(e){
     const scriptTagInput = {
-      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v10.js', 
+      src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v13.js', 
       displayScope: 'ONLINE_STORE'
     };
     console.log("script tag gesetzt, input:",scriptTagInput);
+    this.props.removeScript
     this.props.addScriptTagMutation(
       {variables: { input:scriptTagInput },}
     )
     
-    let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc("i11l-playground-five.myshopify.com");
+    let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc(this.props.shopOrigin);
     this.config["countdownIsActive"] = true;
     configurationsRef.set(this.config).then(
       () => this.setState({countdownIsActive: true, isTouched: false})
@@ -77,7 +78,7 @@ class Index extends React.Component{
     
   }
   removeFromStore(e){
-    let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc("i11l-playground-five.myshopify.com");
+    let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc(this.props.shopOrigin);
     this.config["countdownIsActive"] = false;
     configurationsRef.set(this.config).then(
       () => this.setState({countdownIsActive: false, isTouched: false})
