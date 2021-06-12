@@ -48,8 +48,6 @@ const CountdownApp = (props) => {
     }, []);
 
     const [touched, setTouched] = useState(false);
-
-
     
 
     const timezoneOffsetInMS = new Date().getTimezoneOffset() * 60 * 1000;

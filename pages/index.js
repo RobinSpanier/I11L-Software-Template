@@ -1,21 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import { addScriptTagMutation } from '../queries/queries';
+import { addScriptTagMutation, deleteScriptTag } from '../queries/queries';
 import { graphql } from 'react-apollo';
 import { TitleBar } from '@shopify/app-bridge-react';
 import firebase from "./firebase";
+
+
 
 import { Frame, Toast } from '@shopify/polaris';
 
 import { authenticateShopifyPage } from "@bluebeela/nextjs-shopify-auth";
 import CountdownApp from './countdownApp';
+import RunQueries from '../queries/run-queries';
+import { flowRight } from 'lodash';
+
 
 class Index extends React.Component{
 
   constructor(props){
     super(props);
-    this.state = {activeSaveAndApplyToas: false,activeRemoveFromStoreToast: false, countdownIsActive: false, isTouched: false};
+    this.state = {activeSaveAndApplyToas: false,activeRemoveFromStoreToast: false, countdownIsActive: false, isTouched: false, scriptTags: []};
+    
   }
   
+  scriptTagSet = false;
 
   config = {
     endTime: new Date().getTime()+1000*60*30,
@@ -63,11 +70,16 @@ class Index extends React.Component{
       src: 'https://cdn.jsdelivr.net/gh/RobinSpanier/Scripts@main/I11L-Shopify-Countdown-App-v13.js', 
       displayScope: 'ONLINE_STORE'
     };
-    console.log("script tag gesetzt, input:",scriptTagInput);
-    this.props.removeScript
-    this.props.addScriptTagMutation(
-      {variables: { input:scriptTagInput },}
-    )
+
+    if(!this.scriptTagSet){
+      this.removeAllScriptTagsFromPreviousSessionIfApply();
+      console.log("script tag gesetzt, input:",scriptTagInput);
+      this.props.addScriptTagMutation(
+        {variables: { input:scriptTagInput },}
+      )
+
+      this.scriptTagSet = true;
+    }
     
     let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc(this.props.shopOrigin);
     this.config["countdownIsActive"] = true;
@@ -92,6 +104,17 @@ class Index extends React.Component{
     this.setState({isTouched: e.isTouched});
   };
 
+  handleScriptTagChangeValue = e => {
+    this.setState({scriptTags: e});
+  }
+
+  removeAllScriptTagsFromPreviousSessionIfApply(){
+    const scriptTags = this.state.scriptTags.scriptTags.data.scriptTags.edges;
+    let firstId = scriptTags[0].node.id;
+    this.props.deleteScriptTag({variables: { input:firstId },})
+    console.log("removing",firstId);
+  }
+
 
   hideSaveAndApplyToast = () => {
     this.setState({activeSaveAndApplyToas: false});
@@ -115,7 +138,7 @@ class Index extends React.Component{
 
     return (
       <Frame>     
-        
+        <RunQueries onChangeValue={this.handleScriptTagChangeValue}/>
         <TitleBar
           primaryAction={primaryAction}
           secondaryActions={secondaryActions}
@@ -142,4 +165,8 @@ class Index extends React.Component{
 
 export const getServerSideProps = authenticateShopifyPage();
 
-export default graphql(addScriptTagMutation, {name: "addScriptTagMutation"})(Index);
+export default 
+  flowRight(
+    graphql(addScriptTagMutation, {name: "addScriptTagMutation"}),
+    graphql(deleteScriptTag, {name: "deleteScriptTag"})
+  )(Index);
