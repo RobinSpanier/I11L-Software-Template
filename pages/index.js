@@ -109,10 +109,18 @@ class Index extends React.Component{
   }
 
   removeAllScriptTagsFromPreviousSessionIfApply(){
-    const scriptTags = this.state.scriptTags.scriptTags.data.scriptTags.edges;
-    let firstId = scriptTags[0].node.id;
-    this.props.deleteScriptTag({variables: { input:firstId },})
-    console.log("removing",firstId);
+    console.log("triggered remove all with", this.state.scriptTags);
+    try {
+      const scriptTags = this.state.scriptTags.scriptTags.data.scriptTags.edges;
+      if(scriptTags.length > 0){
+        let firstId = scriptTags[0].node.id;
+        this.props.deleteScriptTag({ id:firstId })
+        console.log("removing",firstId);
+      }
+    } catch (error) {
+      console.log("nothing to delete");
+    }
+    
   }
 
 

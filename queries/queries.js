@@ -14,15 +14,16 @@ const addScriptTagMutation = gql`
   }`;
 
 const retrieveScriptTags = gql`
-  query {
-    scriptTags(first:100) {
-      edges {
-        node {
-          id
-        }
+ query {
+  scriptTags(first:100) {
+    edges {
+      node {
+        id
       }
     }
   }
+}
+
 `
 
 const deleteScriptTag = gql`
