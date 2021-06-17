@@ -8,15 +8,48 @@ import ClickHereImage from '../public/clickHereImage';
 
 let globalSetCountdownIsActive;
 let globalSetIsTouchedCallback;
-let endTime = Date.now();
 
 const CountdownApp = (props) => {
 
-
+  config = {
+    endTime: new Date().getTime()+1000*60*30,
+    startTime: new Date().getTime(),
+    sizeSchema: "2",
+    positionSchema: 0,
+    messageText: "a new special offer!",
+    buyNowBtnText: "buy now",
+    daysText: "days",
+    hoursText: "hours",
+    minutesText: "minutes",
+    secondsText: "seconds",
+    messageTextColor: "yellow",
+    buyNowBtnTextColor: "red",
+    daysCountTextColor: "red",
+    hoursCountTextColor: "red",
+    minutesCountTextColor: "red",
+    secondsCountTextColor: "red",
+    daysLabelTextColor: "red",
+    hoursLabelTextColor: "red",
+    minutesLabelTextColor: "red",
+    secondsLabelTextColor: "red",
+    backgroundColor: "red",
+    daysBackgroundColor: "yellow",
+    hoursBackgroundColor: "yellow",
+    minutesBackgroundColor: "yellow",
+    secondsBackgroundColor: "yellow",
+    buyNowBtnBackgroundColor: "yellow",
+    daysBackgroundTemplate: null,
+    hoursBackgroundTemplate: null,
+    minutesBackgroundTemplate: null,
+    secondsBackgroundTemplate: null,
+    backgroundTemplate: null,
+    buyNowBtnBackgroundTemplate: null,
+    countdownIsActive: false
+  }
   
     
     //default
-    const [config, setConfig] = useState(props.configuration);
+    const [config, setConfig] = useState(config);
     const [isTouchedCallback, setIsTouchedCallback] = useState(props.isTouchedCallback);
 
     function applyConfigurationForCountdownApp(firebaseResponse){
