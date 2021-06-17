@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { addScriptTagMutation, deleteScriptTag } from '../queries/queries';
 import { graphql } from 'react-apollo';
 import { TitleBar } from '@shopify/app-bridge-react';
-import firebase from "./firebase";
+import firebase from "../public/firebase";
 
 
 
