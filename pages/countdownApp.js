@@ -11,7 +11,7 @@ let globalSetIsTouchedCallback;
 
 const CountdownApp = (props) => {
 
-  config = {
+  const initialConfig = {
     endTime: new Date().getTime()+1000*60*30,
     startTime: new Date().getTime(),
     sizeSchema: "2",
@@ -49,7 +49,7 @@ const CountdownApp = (props) => {
   
     
     //default
-    const [config, setConfig] = useState(config);
+    const [config, setConfig] = useState(initialConfig);
     const [isTouchedCallback, setIsTouchedCallback] = useState(props.isTouchedCallback);
 
     function applyConfigurationForCountdownApp(firebaseResponse){
