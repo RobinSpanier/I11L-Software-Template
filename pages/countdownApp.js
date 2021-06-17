@@ -28,9 +28,13 @@ const CountdownApp = (props) => {
           )
       });
       const newConfig = (Object.assign({}, config, ...newConfigArrObj));
-      updateStates(newConfig);
       
+      
+
+      updateStates(newConfig);
       setConfig(newConfig);
+
+    
     }
   
 
@@ -136,34 +140,34 @@ const CountdownApp = (props) => {
       
     }
 
-    function applyEndTimeAndSetDate(hourMinuteString){
-      const endDateTS = (new Date(new Date(endTime).toLocaleDateString())).getTime();
-      let newEndTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
-      let newEndTimeTS = newEndTimeToday+endDateTS;
+    // function applyEndTimeAndSetDate(hourMinuteString){
+    //   const endDateTS = (new Date(new Date(endTime).toLocaleDateString())).getTime();
+    //   let newEndTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
+    //   let newEndTimeTS = newEndTimeToday+endDateTS;
 
-      setEndTimeToday(newEndTimeToday);
-      setEndTime(newEndTimeTS);
+    //   setEndTimeToday(newEndTimeToday);
+    //   setEndTime(newEndTimeTS);
  
-      updateConfigurationObject("endTime",newEndTimeTS);
-    }
+    //   updateConfigurationObject("endTime",newEndTimeTS);
+    // }
 
-    function applyStartTimeAndSetDate(hourMinuteString){
-      const startDateTS = (new Date(new Date(startTime).toLocaleDateString())).getTime();
-      let newStartTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
-      let newStartTimeTS = newStartTimeToday+startDateTS;
+    // function applyStartTimeAndSetDate(hourMinuteString){
+    //   const startDateTS = (new Date(new Date(startTime).toLocaleDateString())).getTime();
+    //   let newStartTimeToday = returnTimeTodayFor(new Date(timestampFrom(hourMinuteString)));
+    //   let newStartTimeTS = newStartTimeToday+startDateTS;
       
-      if(endTime < newStartTimeTS){
-        const newEndTime = returnTimeTodayFor(newStartTimeTS) - timezoneOffsetInMS;
-        setEndTimeToday(newEndTime);
-        setEndTime(newStartTimeTS);
-        updateConfigurationObject("endTime",newEndTime);
-      }
-      setStartTime(newStartTimeTS);
-      setStartTimeToday(newStartTimeToday);
-      let adjustedStartTime = startTime - (startTime - Date.now());
-      setDiff(endTime - adjustedStartTime); 
-      updateConfigurationObject("startTime",newStartTimeTS);
-    }
+    //   if(endTime < newStartTimeTS){
+    //     const newEndTime = returnTimeTodayFor(newStartTimeTS) - timezoneOffsetInMS;
+    //     setEndTimeToday(newEndTime);
+    //     setEndTime(newStartTimeTS);
+    //     updateConfigurationObject("endTime",newEndTime);
+    //   }
+    //   setStartTime(newStartTimeTS);
+    //   setStartTimeToday(newStartTimeToday);
+    //   let adjustedStartTime = startTime - (startTime - Date.now());
+    //   setDiff(endTime - adjustedStartTime); 
+    //   updateConfigurationObject("startTime",newStartTimeTS);
+    // }
 
     const sizeChoices = [
         {label: 'Small', value: "1"},
@@ -225,7 +229,7 @@ const CountdownApp = (props) => {
     const updateConfigurationObject = (key, value) => {
       setTouched(true);
       const newConfiguration = {
-        endTime,sizeSchema,positionSchema,messageText,buyNowBtnText,daysText,
+        endTime,startTime,sizeSchema,positionSchema,messageText,buyNowBtnText,daysText,
         hoursText,minutesText,secondsText,messageTextColor,buyNowBtnTextColor,
         daysCountTextColor,hoursCountTextColor,minutesCountTextColor,secondsCountTextColor,
         daysLabelTextColor,hoursLabelTextColor,minutesLabelTextColor,secondsLabelTextColor,
@@ -279,6 +283,7 @@ const CountdownApp = (props) => {
     let [buyNowBtnBackgroundTemplate, setBuyNowBtnBackgroundTemplate] = useState(config.buyNowBtnBackgroundTemplate);
 
     function updateStates(newConfig){
+      setIsTouchedCallback(false);  
       setCountdownIsActive(newConfig.countdownIsActive);
       setMessageText(newConfig.messageText);
       setDaysBackgroundColor(newConfig.daysBackgroundColor);
@@ -318,6 +323,9 @@ const CountdownApp = (props) => {
       setSecondsBackgroundTemplate(newConfig.secondsBackgroundTemplate);
       setBackgroundTemplate(newConfig.backgroundTemplate);
       setBuyNowBtnBackgroundTemplate(newConfig.buyNowBtnBackgroundTemplate);
+      setEndTime(newConfig.endTime);
+      setStartTime(newConfig.startTime);
+      props.onChangeValue({config: newConfig});
     }
 
     useEffect(()=>{
@@ -643,7 +651,6 @@ const CountdownApp = (props) => {
 
 const methods = {
   componentDidUpdate(props){
-    console.log("component did update",props);
     globalSetCountdownIsActive(props.countdownIsActive);
     globalSetIsTouchedCallback(props.isTouchedCallback);
     

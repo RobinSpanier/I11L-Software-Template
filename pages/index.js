@@ -71,24 +71,23 @@ class Index extends React.Component{
       displayScope: 'ONLINE_STORE'
     };
 
-    if(!this.scriptTagSet){
-      this.removeAllScriptTagsFromPreviousSessionIfApply();
-      console.log("script tag gesetzt, input:",scriptTagInput);
-      this.props.addScriptTagMutation(
-        {variables: { input:scriptTagInput },}
-      )
+    this.props.addScriptTagMutation(
+      {variables: { input:scriptTagInput },}
+    )
+    this.scriptTagSet = true;
+  }
 
-      this.scriptTagSet = true;
-    }
-    
+
+
+  saveConfiguration(e){
     let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc(this.props.shopOrigin);
     this.config["countdownIsActive"] = true;
     configurationsRef.set(this.config).then(
       () => this.setState({countdownIsActive: true, isTouched: false})
     )
     this.showSaveAndApplyToast();
-    
   }
+
   removeFromStore(e){
     let configurationsRef = firebase.firestore().collection("Countdown-Configuration").doc(this.props.shopOrigin);
     this.config["countdownIsActive"] = false;
@@ -100,25 +99,35 @@ class Index extends React.Component{
 
 
   handleChangeValue = e => {
+    console.log("new config arrived",e.config);
     this.config = e.config;
     this.setState({isTouched: e.isTouched});
   };
 
   handleScriptTagChangeValue = e => {
     this.setState({scriptTags: e});
+    console.log(e);
+    if(e.scriptTags.data){
+      if(e.scriptTags.data.scriptTags.edges.length > 0 || this.scriptTagSet){
+        console.log("ST existent");
+      }else{
+        this.setScriptTag();
+        console.log("ST sets");
+      }
+    }
   }
 
   removeAllScriptTagsFromPreviousSessionIfApply(){
-    console.log("triggered remove all with", this.state.scriptTags);
+
     try {
       const scriptTags = this.state.scriptTags.scriptTags.data.scriptTags.edges;
       if(scriptTags.length > 0){
         let firstId = scriptTags[0].node.id;
         this.props.deleteScriptTag({ id:firstId })
-        console.log("removing",firstId);
+
       }
     } catch (error) {
-      console.log("nothing to delete");
+
     }
     
   }
@@ -141,7 +150,7 @@ class Index extends React.Component{
 
   render(){
 
-    const primaryAction = {content: 'Save and Apply', onAction: this.setScriptTag.bind(this)};
+    const primaryAction = {content: 'Save and Apply', onAction: this.saveConfiguration.bind(this)};
     const secondaryActions = [{content: 'Remove from Store', onAction: this.removeFromStore.bind(this), destructive: true}];
 
     return (

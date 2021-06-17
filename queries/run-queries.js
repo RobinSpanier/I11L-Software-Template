@@ -4,14 +4,16 @@ import { retrieveScriptTags } from "./queries";
 
 const RunQueries = (props) => {
   const scriptTags = useQuery(retrieveScriptTags)
-  console.log("script Tags in use",scriptTags);
 
   const getScriptTags = () => {
     props.onChangeValue({scriptTags: scriptTags});
   }
 
   useEffect(() => {
-    getScriptTags();
+    setTimeout(() => {
+      getScriptTags(); // lazy solution, because i can
+    }, 300);
+    
   }, []);
 
   return(
