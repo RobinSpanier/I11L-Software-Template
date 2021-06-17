@@ -8,6 +8,7 @@ import ClickHereImage from '../public/clickHereImage';
 
 let globalSetCountdownIsActive;
 let globalSetIsTouchedCallback;
+let endTime = Date.now();
 
 const CountdownApp = (props) => {
 
